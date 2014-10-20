@@ -1,0 +1,82 @@
+<html>
+
+<head>
+    <title>笨笨的博客小站 -- {{title}}</title>
+    <meta charset="utf8">
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/app.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="/stylesheets/default.css"> -->
+    <link rel="stylesheet" type="text/css" href="/stylesheets/idea.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/common.css" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/detail.css" />
+    <script type="text/javascript" src="/javascripts/jquery.js"></script>
+</head>
+
+<body>
+    <div class="container radis_5">
+        <header class="header">
+            <h2>笨笨的博客小站</h2>
+            <hr>
+            <h4>认真生活，快乐工作</h4>
+        </header>
+        <div class="navigation">
+            <span class="left">
+                <a href="/">首页</a>
+                <a href="http://baidu.com">关于本站</a>
+                <a href="http://baidu.com">关于我</a>
+            </span>
+            <span class="right">
+                <span class="search">
+                    <input name="search" placeholder="搜索本站" tabindex="1" />
+                    <img class="right pointer" src="/images/search.png" />
+                </span>
+            </span>
+        </div>
+        <div class="body">
+            <div class="blog">
+                <h2 class="title">
+                    {{title}}
+                </h2>
+                <hr />
+                <div class="info">
+                    <span class="author" title="作者">
+                        <img src="/images/people.png">
+                        <span>{{author}}</span>
+                    </span>
+                    <span class="datetime" title="创建时间">
+                        <img src="/images/calendar.png">
+                        <span>{{displayCreated}}</span>
+                    </span>
+                    <span class="right">
+                        <span class="readcount" title="阅读数">
+                            <img src="/images/view.png">
+                            <span>{{viewcount}}</span>
+                        </span>
+                        <span class="commentcount" title="评论数">
+                            <img src="/images/comment.png">
+                            <span>0</span>
+                        </span>
+                        <span class="score" title="用户评分">
+                            <img src="/images/star.png">
+                            <span>4.55</span>
+                        </span>
+                    </span>
+                </div>
+                <div class="content">{{{displayContent}}}</div>
+                <hr>
+                <div class="link">
+                    <span class="tags">
+                        相关标签： {{#each displayTags}}
+                        <a href="http://baidu.com" class="tag">{{this}}</a>
+                        {{/each}}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div>版权所有 © 2014 www.kllwxy.com</div>
+        </footer>
+    </div>
+</body>
+
+</html>

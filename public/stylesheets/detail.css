@@ -1,0 +1,13 @@
+.container {
+    min-height: 120%;
+}
+.body {
+    margin: 20px;
+}
+.blog {
+    height: auto;
+}
+.blog .content {
+    min-height: 20%;
+    height: auto;
+}

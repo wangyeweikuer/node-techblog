@@ -35,7 +35,7 @@ $(function() {
             placeholder();
             return;
         }
-        $.post('/blogs/preview', {
+        $.post('/blog/preview', {
             content: value
         }).fail(function(err) {
             $topmsg.showTopmsg('error', err);
@@ -47,39 +47,29 @@ $(function() {
         });
     });
     //输入聚焦
-    $('.title input,.editor').focus(function(event) {
-        if ($(this).hasClass('editor')) {
-            $(this).addClass('focus');
-        } else {
-            $(this).parent().addClass('focus');
-        }
+    $('.info input,.editor').focus(function(event) {
+        $(this).parent().addClass('focus');
     }).blur(function(event) {
-        if ($(this).hasClass('editor')) {
-            $(this).removeClass('focus');
-        } else {
-            $(this).parent().removeClass('focus');
-        }
+        $(this).parent().removeClass('focus');
     });
     $title.focus();
     placeholder();
     //发布内容
     $('button.publish').click(function() {
-        var value = $editor[0].outerText;
-        if (!value || value.lenght == 0) {
-            $topmsg.showTopmsg('error', '发布内容为空！');
-            return;
-        }
-        $.post('/blogs/save', {
-            content: value
+        $.post('/blog/save', {
+            title: $('input[name="title"]').val().trim(),
+            tags: $('input[name="tags"]').val().trim(),
+            author: $('input[name="author"]').val().trim(),
+            content: $editor[0].outerText
         }).fail(function(err) {
             $topmsg.showTopmsg('error', err);
         }).done(function(data) {
-            window.location.href = "/blogs/list";
+            window.location.href = "/blog";
         });
     });
     //返回
     $('button.goback').click(function(event) {
-        window.location.href = "/blogs/list";
+        window.location.href = "/blog";
     });
     //
     $topmsg.find('span.close').click(function(event) {
