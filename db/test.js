@@ -9,6 +9,6 @@ var blog = require('./blog');
 //     author: 'wangye',
 //     tags: 'javascript,nodejs'
 // });
- blog.find(1, function(rows) {
-     console.log(rows);
- });
+blog.find(1, function(rows) {
+    console.log(rows);
+});

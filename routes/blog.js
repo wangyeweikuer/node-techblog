@@ -1,6 +1,7 @@
 var express = require('express');
 var marked = require('marked');
 var dao = require('../db/blog');
+var sysconfDao = require('../db/sysconf');
 var strftime = require('strftime');
 var router = express.Router();
 
@@ -34,6 +35,10 @@ function sendResultOrError(httpResponse, err, html) {
     return true;
 }
 
+function checkAuthorized(httpRequest, httpResponse) {
+    var token = httpRequest.param('token');
+}
+
 function processBlog(blog) {
     //处理时间
     blog.displayCreated = strftime('%Y-%m-%d', blog.created);
@@ -46,6 +51,10 @@ function processBlog(blog) {
 router.get('/detail', function(req, res) {
     var id = req.param('id');
     dao.find(id, function(blog) {
+        if(blog == null){
+            sendResultOrError(res,'blog isn\'t found by id'+id);
+            return;
+        }
         res.render('blog/detail', processBlog(blog), function(err, html) {
             if (sendResultOrError(res, err, html)) {
                 dao.incrementViewCount(id);
@@ -68,8 +77,13 @@ router.get('/list', function(req, res) {
 });
 
 router.get('/edit', function(req, res) {
-    res.render('blog/edit', function(err, html) {
-        sendResultOrError(res, err, html);
+    var id = req.param('id');
+    dao.find(id, function(blog) {
+        res.render('blog/edit', {
+            blog: blog
+        }, function(err, html) {
+            sendResultOrError(res, err, html);
+        });
     });
 });
 
@@ -87,8 +101,18 @@ router.post('/save', function(req, res) {
         res.status(400).send('(no data)');
         return;
     }
+    var idstr = req.param('id');
     marked(blog.content, function(err, content) {
         blog.displayContent = content;
+        if (idstr && idstr.length > 0) {
+            var id = parseInt(idstr, 10);
+            if (id > 0) {
+                dao.update(blog, function(rows) {
+                    res.send('ok');
+                });
+                return;
+            }
+        }
         dao.save(blog, function(rows) {
             res.send('ok');
         });
@@ -104,6 +128,17 @@ router.post('/preview', function(req, res) {
     marked(content, function(err, content) {
         sendResultOrError(res, err, content);
     });
+});
+
+router.get('/delete', function(req, res) {
+    var id = req.param('id');
+    var token = req.param('token');
+    if (token == "wangye04") {
+        dao.remove(id);
+        res.send('ok');
+    } else {
+        sendResultOrError(res, "no token", null);
+    }
 });
 
 module.exports = router;

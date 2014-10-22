@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>笨笨的博客小站 —— 发布我的博客</title>
+    <title>笨笨的博客小站 —— {{#if blog}}编辑{{else}}发布{{/if}}我的博客</title>
     <meta charset="utf8">
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/app.css">
@@ -19,15 +19,16 @@
             <span class="info"></span>
         </div>
         <div class="info line">
-            <h3>发布新博客：</h3>
+            <input type="hidden" name="id" value="{{#if blog}}{{blog.id}}{{/if}}">
+            <h3>{{#if blog}}编辑{{else}}发布{{/if}}博客：</h3>
             <div class="title">
-                <input name="title" placeholder="请输入博客标题" autocomplete="off">
+                <input name="title" placeholder="请输入博客标题" autocomplete="off" value="{{#if blog}}{{blog.title}}{{/if}}">
             </div>
             <div class="author">
-                <input name="author" placeholder="请输入作者" autocomplete="on">
+                <input name="author" placeholder="请输入作者" autocomplete="on" value="{{#if blog}}{{blog.author}}{{/if}}">
             </div>
             <div class="tags">
-                <input name="tags" placeholder="请输入标签，以,分割" autocomplete="on">
+                <input name="tags" placeholder="请输入标签，以,分割" autocomplete="on" value="{{#if blog}}{{blog.tags}}{{/if}}">
             </div>
         </div>
         <div class="body line">
@@ -36,7 +37,9 @@
             </div>
             <div id="bodyright" class="bodypart">
                 <div>
-                    <div class="content editor" contentEditable="true"></div>
+                    <div class="content editor" contentEditable="true">
+                        {{#if blog}}{{{blog.content}}}{{/if}}
+                    </div>
                 </div>
             </div>
         </div>

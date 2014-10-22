@@ -1,5 +1,6 @@
 var fs = require('fs');
-var path = require('path')
+var path = require('path');
+var mysql = require('mysql');
 
 function Parser(domain) {
     var f = fs.readFileSync(path.join(__dirname, domain + ".sql"), 'UTF-8');
@@ -26,9 +27,14 @@ function Parser(domain) {
     this.getSql = function(key, params) {
         var sql = map[key];
         if (params) {
-            for (var p in params) {
-                var pattern = "\$\{" + p + "\}";
-                sql = sql.replace(pattern, params[p]);
+            if (typeof params == 'number' || typeof params == 'boolean' || typeof params == 'string') {
+                var pattern = "\$\{.*\}";
+                sql = sql.replace(pattern, mysql.escape(params));
+            } else {
+                for (var p in params) {
+                    var pattern = "\$\{" + p + "\}";
+                    sql = sql.replace(pattern, mysql.escape(params[p]));
+                }
             }
         }
         return sql;

@@ -1,11 +1,16 @@
 var dao = require('./dao');
 var parser = require('./sqlparser')('blog');
-// dao.execute(parser.getSql('droptable'));
-// dao.execute(parser.getSql('createtable'));
 
 module.exports = {
     save: function(blog, callback) {
         var sql = parser.getSql('insert', blog);
+        dao.execute(sql, function(rows) {
+            if (callback)
+                callback(rows);
+        });
+    },
+    update: function(blog, callback) {
+        var sql = parser.getSql('update', blog);
         dao.execute(sql, function(rows) {
             if (callback)
                 callback(rows);
@@ -32,6 +37,12 @@ module.exports = {
                 callback(rows[0]);
             }
         });
+    },
+    remove: function(id) {
+        var sql = parser.getSql('remove', {
+            id: id
+        });
+        dao.execute(sql);
     },
     incrementViewCount: function(id) {
         var sql = parser.getSql('incrementViewCount', {
