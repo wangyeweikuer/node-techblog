@@ -8,7 +8,7 @@ var parser = require('./sqlparser')('sysconf');
 var sysconfDao = require('./sysconf');
 
 // dao.execute(parser.getSql('droptable'));
-dao.execute(parser.getSql('createtable'));
+// dao.execute(parser.getSql('createtable'));
 
 sysconfDao.insert('token', 'wangye04');
 sysconfDao.get('token', function(sysconf) {

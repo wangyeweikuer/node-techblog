@@ -35,8 +35,15 @@ function sendResultOrError(httpResponse, err, html) {
     return true;
 }
 
-function checkAuthorized(httpRequest, httpResponse) {
+function checkAuthorized(httpRequest, httpResponse, callback) {
     var token = httpRequest.param('token');
+    sysconfDao.get('token', function(scvalue) {
+        if (scvalue != null && scvalue == token) {
+            callback();
+            return;
+        }
+        httpResponse.status(403).send("access denied");
+    });
 }
 
 function processBlog(blog) {
@@ -51,8 +58,8 @@ function processBlog(blog) {
 router.get('/detail', function(req, res) {
     var id = req.param('id');
     dao.find(id, function(blog) {
-        if(blog == null){
-            sendResultOrError(res,'blog isn\'t found by id'+id);
+        if (blog == null) {
+            sendResultOrError(res, 'blog isn\'t found by id' + id);
             return;
         }
         res.render('blog/detail', processBlog(blog), function(err, html) {
@@ -101,20 +108,22 @@ router.post('/save', function(req, res) {
         res.status(400).send('(no data)');
         return;
     }
-    var idstr = req.param('id');
-    marked(blog.content, function(err, content) {
-        blog.displayContent = content;
-        if (idstr && idstr.length > 0) {
-            var id = parseInt(idstr, 10);
-            if (id > 0) {
-                dao.update(blog, function(rows) {
-                    res.send('ok');
-                });
-                return;
+    checkAuthorized(req, res, function() {
+        var idstr = req.param('id');
+        marked(blog.content, function(err, content) {
+            blog.displayContent = content;
+            if (idstr && idstr.length > 0) {
+                var id = parseInt(idstr, 10);
+                if (id > 0) {
+                    dao.update(blog, function(rows) {
+                        res.send('ok');
+                    });
+                    return;
+                }
             }
-        }
-        dao.save(blog, function(rows) {
-            res.send('ok');
+            dao.save(blog, function(rows) {
+                res.send('ok');
+            });
         });
     });
 });
@@ -131,14 +140,11 @@ router.post('/preview', function(req, res) {
 });
 
 router.get('/delete', function(req, res) {
-    var id = req.param('id');
-    var token = req.param('token');
-    if (token == "wangye04") {
+    checkAuthorized(req, res, function() {
+        var id = req.param('id');
         dao.remove(id);
         res.send('ok');
-    } else {
-        sendResultOrError(res, "no token", null);
-    }
+    });
 });
 
 module.exports = router;

@@ -10,7 +10,7 @@ CREATE TABLE IF not exists sysconf(
 ) engine = innodb DEFAULT charset utf8;
 
 ##get
-SELECT * from sysconf where sckey = ${sckey}
+SELECT scvalue from sysconf where sckey = ${sckey}
 
 ##insert
 insert into sysconf (sckey,scvalue) values(${sckey},${scvalue});
